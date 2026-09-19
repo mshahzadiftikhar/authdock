@@ -36,13 +36,13 @@ NestJS + React self-hosted).
 
 ```
 packages/
-  auth-server/   # NestJS module
+  auth-nestjs/   # NestJS module
   auth-react/    # Headless hooks + default styled components
 examples/
   nestjs-react-starter/   # (not yet built) — the deployable demo app
 ```
 
-**`packages/auth-server`** — the NestJS integration. The single most
+**`packages/auth-nestjs`** — the NestJS integration. The single most
 important file is `src/auth-engine.interface.ts`: it defines `AuthEngine`,
 AuthDock's own interface for signUp/signIn/signOut/verifySession/etc.
 `src/better-auth.engine.ts` implements that interface using better-auth —
@@ -67,7 +67,7 @@ explicit v2 idea, not implemented — don't add it speculatively.
   attention. Do not make bearer-JWT-in-localStorage the default — that was
   explicitly identified as the weaker pattern this project moves away from.
 - **Database: PostgreSQL via Prisma.** Decided, not left generic — see
-  `packages/auth-server/prisma/schema.prisma`. Don't add a second ORM/DB
+  `packages/auth-nestjs/prisma/schema.prisma`. Don't add a second ORM/DB
   adapter without a real reason; better-auth's own adapter can be swapped
   later if genuinely needed.
 - **No CLI, no `auth-core` package.** Both were cut from an earlier, more
@@ -102,8 +102,8 @@ exact failure mode this project is a response to.
 ```bash
 npm install
 
-# auth-server
-cd packages/auth-server
+# auth-nestjs
+cd packages/auth-nestjs
 npx prisma generate        # requires DATABASE_URL in .env
 npx prisma migrate dev
 npx jest                    # unit tests, e.g. config validation
@@ -125,7 +125,7 @@ running anything that touches auth end to end.
   them; exposing them is additive later, not urgent now).
 - Don't build the CLI scaffolder. It was deliberately cut as the
   highest risk-to-value item in the original plan.
-- Don't let `auth-server` or `auth-react` import from better-auth outside
+- Don't let `auth-nestjs` or `auth-react` import from better-auth outside
   of `better-auth.engine.ts` — that seam is the whole point.
 - Don't skip writing a test for anything security-relevant (token expiry,
   rate limiting, session invalidation, config validation) — this project's

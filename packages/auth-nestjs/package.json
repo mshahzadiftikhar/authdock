@@ -11,7 +11,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mshahzadiftikhar/authdock.git",
-    "directory": "packages/auth-server"
+    "directory": "packages/auth-nestjs"
   },
   "homepage": "https://github.com/mshahzadiftikhar/authdock#readme",
   "bugs": {

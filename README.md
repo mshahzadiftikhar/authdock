@@ -30,7 +30,7 @@ implemented:
 - [x] `AuthEngine` interface + `BetterAuthEngine` adapter (better-auth,
       Prisma/PostgreSQL, cookie sessions by default, opt-in JWT strategy)
 - [x] Boot-time config validation (fails loudly in production on missing/
-      placeholder secrets) — see `packages/auth-server/src/config`
+      placeholder secrets) — see `packages/auth-nestjs/src/config`
 - [x] `AuthModule.forRoot()`, guards (`@Public()`, `@CurrentUser()`), rate
       limiting on signup/login/forgot-password
 - [x] Pluggable `EmailProvider` (Resend for production, console logging for
@@ -51,7 +51,7 @@ implemented:
 
 ```
 packages/
-  auth-server/   # NestJS module — the AuthEngine seam + BetterAuthEngine adapter
+  auth-nestjs/   # NestJS module — the AuthEngine seam + BetterAuthEngine adapter
   auth-react/    # Headless hooks + default styled components
 examples/
   nestjs-react-starter/   # (not yet built) — the deployable demo app
@@ -64,11 +64,11 @@ npm install
 cp .env.example .env   # then fill in DATABASE_URL, SESSION_SECRET, RESEND_API_KEY
 ```
 
-`auth-server` needs a running PostgreSQL instance and a generated Prisma
-client (`packages/auth-server/prisma/schema.prisma`):
+`auth-nestjs` needs a running PostgreSQL instance and a generated Prisma
+client (`packages/auth-nestjs/prisma/schema.prisma`):
 
 ```bash
-cd packages/auth-server
+cd packages/auth-nestjs
 npx prisma generate
 npx prisma migrate dev
 ```
@@ -82,7 +82,7 @@ npx prisma migrate dev
 - **`AuthEngine` is the seam, not better-auth's own types.** Everything
   better-auth-specific lives in `better-auth.engine.ts`. If it's ever
   swapped out, that's the only file that should need rewriting.
-- **Config fails loudly, not quietly.** `packages/auth-server/src/config/auth-config.schema.ts`
+- **Config fails loudly, not quietly.** `packages/auth-nestjs/src/config/auth-config.schema.ts`
   throws at boot in production if `SESSION_SECRET` is missing or left at an
   obvious placeholder, or if `RESEND_API_KEY`/`DATABASE_URL` is missing.
 - **No CLI, no `auth-core` package.** Both were cut deliberately from the
