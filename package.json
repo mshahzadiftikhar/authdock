@@ -1,0 +1,23 @@
+{
+  "name": "authdock-workspace",
+  "private": true,
+  "version": "0.0.1",
+  "description": "AuthDock — a secure-by-default auth starter kit for NestJS + React, built on better-auth.",
+  "license": "MIT",
+  "workspaces": [
+    "packages/*",
+    "examples/*",
+    "examples/*/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

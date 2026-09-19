@@ -1,0 +1,86 @@
+/*
+ * Default theme for AuthDock's components, driven entirely by CSS variables.
+ * Override any of these in your own stylesheet to restyle without forking —
+ * see the /themes page in examples/nestjs-react-starter for two worked examples.
+ */
+:root {
+  --authdock-primary: #2563eb;
+  --authdock-primary-hover: #1d4ed8;
+  --authdock-error: #dc2626;
+  --authdock-text: #111827;
+  --authdock-muted: #6b7280;
+  --authdock-border: #d1d5db;
+  --authdock-bg: #ffffff;
+  --authdock-radius: 8px;
+  --authdock-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+[data-authdock-color-scheme='dark'] {
+  color-scheme: dark;
+  --authdock-primary: #60a5fa;
+  --authdock-primary-hover: #93c5fd;
+  --authdock-error: #f87171;
+  --authdock-text: #f9fafb;
+  --authdock-muted: #9ca3af;
+  --authdock-border: #4b5563;
+  --authdock-bg: #111827;
+}
+
+.authdock-form {
+  font-family: var(--authdock-font);
+  color: var(--authdock-text);
+  background: var(--authdock-bg);
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.authdock-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.authdock-label {
+  font-size: 13px;
+  color: var(--authdock-muted);
+}
+
+.authdock-input {
+  border: 1px solid var(--authdock-border);
+  border-radius: var(--authdock-radius);
+  padding: 8px 12px;
+  font-size: 14px;
+  color: var(--authdock-text);
+}
+
+.authdock-input:focus {
+  outline: 2px solid var(--authdock-primary);
+  outline-offset: 1px;
+}
+
+.authdock-button {
+  background: var(--authdock-primary);
+  color: white;
+  border: none;
+  border-radius: var(--authdock-radius);
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.authdock-button:hover {
+  background: var(--authdock-primary-hover);
+}
+
+.authdock-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.authdock-error {
+  color: var(--authdock-error);
+  font-size: 13px;
+}
