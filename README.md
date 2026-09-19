@@ -21,32 +21,6 @@ and ships two packages on top of it:
 - **`@authdock/auth-react`** — headless hooks (`useSignIn`, `useSignUp`,
   `useSession`, …) plus one themeable default form set.
 
-## Status
-
-Early scaffold — see the planning doc (linked from the project this repo
-belongs to) for the full architecture, decisions, and roadmap. Currently
-implemented:
-
-- [x] `AuthEngine` interface + `BetterAuthEngine` adapter (better-auth,
-      Prisma/PostgreSQL, cookie sessions by default, opt-in JWT strategy)
-- [x] Boot-time config validation (fails loudly in production on missing/
-      placeholder secrets) — see `packages/auth-nestjs/src/config`
-- [x] `AuthModule.forRoot()`, guards (`@Public()`, `@CurrentUser()`), rate
-      limiting on signup/login/forgot-password
-- [x] Pluggable `EmailProvider` (Resend for production, console logging for
-      local dev)
-- [x] Headless React hooks + one default styled form set
-      (`LoginForm`, `SignupForm`, `ForgotPasswordForm`), themeable via CSS
-      variables and a `classNames` override prop
-- [x] `examples/nestjs-react-starter` — NestJS host + Vite/React app,
-      manually verified end to end (signup → verify → login → session →
-      logout) against local Postgres. See its own README for setup and
-      known limitations.
-- [ ] Automated end-to-end tests against a real NestJS app + Postgres
-      (the example above is manually verified only, not yet a test suite)
-- [ ] Security test checklist: token replay, expiry boundaries, rate-limit
-      triggering, session invalidation on logout, CSRF behavior
-
 ## Repo layout
 
 ```

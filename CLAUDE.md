@@ -39,7 +39,7 @@ packages/
   auth-nestjs/   # NestJS module
   auth-react/    # Headless hooks + default styled components
 examples/
-  nestjs-react-starter/   # (not yet built) — the deployable demo app
+  nestjs-react-starter/   # the deployable demo app — NestJS API + Vite/React frontend
 ```
 
 **`packages/auth-nestjs`** — the NestJS integration. The single most
@@ -87,12 +87,12 @@ explicit v2 idea, not implemented — don't add it speculatively.
 
 ## A concrete cautionary example (read before touching auth logic)
 
-An earlier project, `remindly-node`, hand-rolled almost this exact thing:
-manual `bcrypt`/`crypto.randomBytes` tokens, hand-written Passport
-strategies, a dozen auth columns bolted onto a `User` entity, and — the
-detail that matters most — a single long-lived JWT with **no refresh
-rotation and no rate limiting**, plus a `JWT_SECRET` that silently defaulted
-to `'change-me'` if unset. AuthDock exists specifically to not repeat that.
+An earlier hand-rolled auth implementation I built hit almost this exact
+failure mode: manual `bcrypt`/`crypto.randomBytes` tokens, hand-written
+Passport strategies, a dozen auth columns bolted onto a `User` entity, and —
+the detail that matters most — a single long-lived JWT with **no refresh
+rotation and no rate limiting**, plus a secret that silently defaulted to a
+placeholder value if unset. AuthDock exists specifically to not repeat that.
 If you're ever tempted to loosen the config validation, add a "temporary"
 default secret, or skip rate limiting "just for now" — don't. That's the
 exact failure mode this project is a response to.
