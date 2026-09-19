@@ -54,10 +54,33 @@ packages/
   auth-nestjs/   # NestJS module — the AuthEngine seam + BetterAuthEngine adapter
   auth-react/    # Headless hooks + default styled components
 examples/
-  nestjs-react-starter/   # (not yet built) — the deployable demo app
+  nestjs-react-starter/   # the deployable demo app — NestJS API + Vite/React frontend
 ```
 
-## Local setup
+## Install
+
+Both packages are published to npm:
+
+```bash
+npm install @authdock/auth-nestjs better-auth @prisma/client
+npm install @authdock/auth-react
+```
+
+See each package's own README for usage:
+[`packages/auth-nestjs`](packages/auth-nestjs/README.md),
+[`packages/auth-react`](packages/auth-react/README.md).
+
+## Running the example app
+
+```bash
+cd examples/nestjs-react-starter
+npm run dev   # starts Postgres (Docker), runs migrations, then the API + web app
+```
+
+See [`examples/nestjs-react-starter/README.md`](examples/nestjs-react-starter/README.md)
+for setup details.
+
+## Working on this repo
 
 ```bash
 npm install
@@ -91,5 +114,4 @@ npx prisma migrate dev
 
 ## License
 
-MIT (once published — see the planning doc's open decisions on public vs.
-private).
+MIT
