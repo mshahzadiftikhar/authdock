@@ -1,0 +1,16 @@
+{
+  "name": "nestjs-react-starter",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Runs the AuthDock example end to end: Postgres (Docker), the NestJS API, and the React app, together.",
+  "scripts": {
+    "db:up": "docker compose up -d --wait",
+    "db:down": "docker compose down",
+    "db:migrate": "cd ../../packages/auth-nestjs && DATABASE_URL=postgresql://user:password@localhost:5432/authdock npx prisma generate && DATABASE_URL=postgresql://user:password@localhost:5432/authdock npx prisma migrate deploy",
+    "predev": "npm run db:up && npm run db:migrate",
+    "dev": "concurrently -n server,web -c blue,green \"npm --prefix server run dev\" \"npm --prefix web run dev\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.0"
+  }
+}

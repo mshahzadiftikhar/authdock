@@ -1,0 +1,23 @@
+{
+  "name": "nestjs-react-starter-web",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Vite + React frontend demoing @authdock/auth-react end-to-end.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -p tsconfig.json && vite build"
+  },
+  "dependencies": {
+    "@authdock/auth-react": "^0.0.1",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.0",
+    "vite": "^5.4.0",
+    "typescript": "^5.6.0",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0"
+  }
+}

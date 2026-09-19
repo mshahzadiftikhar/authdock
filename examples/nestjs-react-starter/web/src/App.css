@@ -1,0 +1,131 @@
+:root {
+  color-scheme: light dark;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #f3f4f6;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background: #111827;
+  }
+}
+
+.example-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: 24px;
+}
+
+.example-wordmark {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #111827;
+}
+
+@media (prefers-color-scheme: dark) {
+  .example-wordmark {
+    color: #f9fafb;
+  }
+}
+
+.example-tabs {
+  box-sizing: border-box;
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  background: #e5e7eb;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 360px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .example-tabs {
+    background: #1f2937;
+  }
+}
+
+.example-tab {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 8px 10px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #6b7280;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.example-tab:hover:not(:disabled) {
+  color: #111827;
+}
+
+.example-tab:disabled {
+  background: #ffffff;
+  color: #111827;
+  cursor: default;
+  box-shadow: 0 1px 2px rgba(17, 24, 39, 0.08);
+}
+
+@media (prefers-color-scheme: dark) {
+  .example-tab {
+    color: #9ca3af;
+  }
+
+  .example-tab:hover:not(:disabled) {
+    color: #f9fafb;
+  }
+
+  .example-tab:disabled {
+    background: #374151;
+    color: #f9fafb;
+  }
+}
+
+.example-message {
+  max-width: 360px;
+  font-size: 13px;
+  color: #4b5563;
+  text-align: center;
+}
+
+.example-session-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 28px 32px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 1px 2px rgba(17, 24, 39, 0.04), 0 8px 24px rgba(17, 24, 39, 0.08);
+}
+
+@media (prefers-color-scheme: dark) {
+  .example-session-card {
+    background: #1f2937;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2), 0 8px 24px rgba(0, 0, 0, 0.35);
+  }
+}
+
+.example-session-email {
+  color: #111827;
+  font-size: 14px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .example-session-email {
+    color: #f9fafb;
+  }
+}
