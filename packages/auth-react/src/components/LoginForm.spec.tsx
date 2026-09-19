@@ -32,7 +32,9 @@ describe('LoginForm', () => {
     const listeners = new Set<(event: MediaQueryListEvent) => void>();
     let matches = true;
     vi.spyOn(window, 'matchMedia').mockImplementation(() => ({
-      matches,
+      get matches() {
+        return matches;
+      },
       media: '(prefers-color-scheme: dark)',
       onchange: null,
       addEventListener: (_type, listener) => listeners.add(listener),
