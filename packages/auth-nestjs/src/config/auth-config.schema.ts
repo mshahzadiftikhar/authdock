@@ -7,6 +7,9 @@ const PLACEHOLDER_SECRETS = new Set([
   '',
 ]);
 
+/** Dev-only fallback so a quick local trial doesn't need every env var set — never used in production (see the superRefine check below). */
+const DEV_DEFAULT_FRONTEND_URL = 'http://localhost:5173';
+
 /**
  * Validated at boot. In production, a missing DATABASE_URL / SESSION_SECRET /
  * RESEND_API_KEY, or a SESSION_SECRET left at an obvious placeholder, throws
@@ -22,7 +25,9 @@ export const AuthConfigSchema = z
     SESSION_STRATEGY: z.enum(['cookie', 'jwt']).default('cookie'),
     RESEND_API_KEY: z.string().optional().default(''),
     RESEND_FROM: z.string().default('onboarding@resend.dev'),
-    FRONTEND_URL: z.string().url(),
+    // Optional here (defaulted below, dev-only, by loadAuthConfig) — required
+    // in production via the superRefine check, same as SESSION_SECRET/RESEND_API_KEY.
+    FRONTEND_URL: z.string().url().optional(),
     API_URL: z.string().url().optional(),
   })
   .superRefine((val, ctx) => {
@@ -46,9 +51,18 @@ export const AuthConfigSchema = z
           'RESEND_API_KEY is required in production — verification and password-reset emails cannot send without it.',
       });
     }
+
+    if (isProd && !val.FRONTEND_URL) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['FRONTEND_URL'],
+        message:
+          'FRONTEND_URL is required in production — verification/reset emails link back to it.',
+      });
+    }
   });
 
-export type AuthConfig = z.infer<typeof AuthConfigSchema>;
+export type AuthConfig = Omit<z.infer<typeof AuthConfigSchema>, 'FRONTEND_URL'> & { FRONTEND_URL: string };
 
 /** Call once at boot (e.g. in main.ts) before creating the Nest app. Throws on invalid config. */
 export function loadAuthConfig(env: NodeJS.ProcessEnv = process.env): AuthConfig {
@@ -57,5 +71,5 @@ export function loadAuthConfig(env: NodeJS.ProcessEnv = process.env): AuthConfig
     const issues = result.error.issues.map((i) => `  - ${i.path.join('.')}: ${i.message}`).join('\n');
     throw new Error(`Invalid AuthDock configuration:\n${issues}`);
   }
-  return result.data;
+  return { ...result.data, FRONTEND_URL: result.data.FRONTEND_URL ?? DEV_DEFAULT_FRONTEND_URL };
 }

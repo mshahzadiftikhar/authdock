@@ -7,11 +7,14 @@ export * from './hooks/useSignUp';
 export * from './hooks/useSignIn';
 export * from './hooks/useSignOut';
 export * from './hooks/usePasswordReset';
+export * from './hooks/useEmailVerification';
 
 // Default styled components — one tier, themeable via CSS variables + classNames
 export * from './components/LoginForm';
 export * from './components/SignupForm';
 export * from './components/ForgotPasswordForm';
+export * from './components/ResetPasswordForm';
+export * from './components/VerifyEmailStatus';
 export * from './components/classnames';
 
 // Types

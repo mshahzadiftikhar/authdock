@@ -53,6 +53,9 @@ export function createAuthClient(config: AuthClientConfig) {
         method: 'POST',
         body: JSON.stringify({ token, password }),
       }),
+    verifyEmail: (token: string) =>
+      request<{ message: string }>(`/verify-email?token=${encodeURIComponent(token)}`),
+    resendVerificationEmail: () => request<{ message: string }>('/resend-verification', { method: 'POST' }),
   };
 }
 

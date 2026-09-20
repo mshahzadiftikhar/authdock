@@ -36,7 +36,7 @@ examples/
 Both packages are published to npm:
 
 ```bash
-npm install @authdock/auth-nestjs better-auth @prisma/client
+npm install @authdock/auth-nestjs better-auth pg
 npm install @authdock/auth-react
 ```
 
@@ -61,13 +61,12 @@ npm install
 cp .env.example .env   # then fill in DATABASE_URL, SESSION_SECRET, RESEND_API_KEY
 ```
 
-`auth-nestjs` needs a running PostgreSQL instance and a generated Prisma
-client (`packages/auth-nestjs/prisma/schema.prisma`):
+`auth-nestjs` needs a running PostgreSQL instance. Schema is derived
+directly from `better-auth.cli-config.ts` (no ORM, no codegen step):
 
 ```bash
 cd packages/auth-nestjs
-npx prisma generate
-npx prisma migrate dev
+npm run db:migrate   # npx @better-auth/cli migrate under the hood
 ```
 
 ## Design decisions worth knowing before touching the code

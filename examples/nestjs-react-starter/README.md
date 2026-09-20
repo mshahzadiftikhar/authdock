@@ -17,8 +17,9 @@ Postgres database.
 3. `cd examples/nestjs-react-starter && npm run dev`
 
 That one command: starts Postgres via Docker Compose (waits for its
-healthcheck), generates the Prisma client and applies migrations
-(`auth-nestjs`'s schema — nothing duplicated here), then runs the API
+healthcheck), applies better-auth's schema directly via
+`@better-auth/cli migrate` (no ORM, no codegen — see
+`packages/auth-nestjs/better-auth.cli-config.ts`), then runs the API
 (`http://localhost:3000`) and the web app (`http://localhost:5173`)
 together, output interleaved and color-tagged by process.
 
@@ -26,12 +27,11 @@ To run the pieces individually instead: `npm run db:up` /
 `npm run db:migrate` / `npm run db:down`, or `cd server && npm run dev` /
 `cd web && npm run dev` on their own (once the DB is up and migrated).
 
-## Known limitation
+## Email verification and password reset
 
-Email verification is completed by opening the link `ConsoleEmailProvider`
-logs to the server's console directly (it's a plain `GET
-/api/auth/verify-email?token=...` route) — there's no in-app "verify"
-screen, since `@authdock/auth-react`'s client doesn't wrap that endpoint yet.
-Same for password reset: `ForgotPasswordForm` only requests the reset
-link; completing it (`POST /api/auth/reset-password`) has to be done
-directly against the API for now.
+`ConsoleEmailProvider` logs both links to the server's console instead of
+sending real email. Both now open real in-app screens (`web/src/App.tsx`
+renders `VerifyEmailStatus`/`ResetPasswordForm` from `@authdock/auth-react`
+based on the URL) rather than a bare API response — `better-auth.engine.ts`
+rewrites better-auth's own link to point at `FRONTEND_URL` instead of the
+API for this reason.

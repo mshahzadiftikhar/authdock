@@ -1,8 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { betterAuth } from 'better-auth';
 import { bearer } from 'better-auth/plugins';
-import { prismaAdapter } from 'better-auth/adapters/prisma';
-import type { PrismaClient } from '@prisma/client';
+import type { Pool } from 'pg';
 import {
   AuthEngine,
   AuthSession,
@@ -12,6 +11,63 @@ import {
 } from './auth-engine.interface';
 import { EmailProvider } from './email/email-provider.interface';
 import { AuthConfig } from './config/auth-config.schema';
+import { toFrontendLink } from './verification-links';
+
+// Typed as `any` deliberately: betterAuth()'s return type is a generic keyed to
+// its exact options object, which fights TS when options are built dynamically
+// (from our own config). This is the one place that trade-off is made — every
+// call BetterAuthEngine makes below is still checked against
+// auth-engine.interface.ts by `implements`.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type BetterAuthInstance = any;
+
+/**
+ * Builds the betterAuth() instance. Exported (not just constructed inline in
+ * BetterAuthEngine below) so `better-auth.cli-config.ts` — used only for
+ * `npx @better-auth/cli generate`/`migrate` — can share the exact same
+ * config instead of hand-duplicating it. Two copies of this config drifting
+ * apart is exactly the kind of bug a schema-generation tool exists to catch,
+ * so it's not worth risking by hand-maintaining a second definition.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function createBetterAuthInstance(pool: Pool, config: AuthConfig, emailProvider: EmailProvider): BetterAuthInstance {
+  return betterAuth({
+    // Origin only (no path) — better-auth appends its own basePath default
+    // ('/api/auth'), which matches AuthController's actual mount (global
+    // prefix 'api' + controller 'auth'). Passing the full API_URL (which
+    // already includes '/api') would make better-auth skip appending that
+    // path and build broken verification/reset links.
+    baseURL: config.API_URL ? new URL(config.API_URL).origin : undefined,
+    // A raw `pg.Pool` — better-auth structurally accepts it as Kysely's
+    // PostgresPool and manages the Kysely adapter internally. No ORM/codegen
+    // step: `npx @better-auth/cli generate`/`migrate` derive and apply the
+    // schema straight from this config (see better-auth.cli-config.ts).
+    database: pool,
+    secret: config.SESSION_SECRET,
+    session: {
+      strategy: config.SESSION_STRATEGY, // 'cookie' (default) or 'jwt' — see architecture doc
+      cookieCache: { enabled: true },
+    },
+    emailAndPassword: {
+      enabled: true,
+      requireEmailVerification: true,
+      sendResetPassword: async ({ user, url }: { user: { email: string }; url: string }) => {
+        await emailProvider.send(user.email, 'Reset your password', resetPasswordHtml(toFrontendLink(url, config, '/reset-password')));
+      },
+    },
+    emailVerification: {
+      sendVerificationEmail: async ({ user, url }: { user: { email: string }; url: string }) => {
+        await emailProvider.send(user.email, 'Verify your email', verificationHtml(toFrontendLink(url, config, '/verify-email')));
+      },
+    },
+    // Required for signOut/verifySession below, which authenticate via
+    // `Authorization: Bearer <session token>` — AuthController owns the
+    // actual cookie (see SESSION_COOKIE in auth.controller.ts), so
+    // better-auth itself is only ever driven over its bearer-token path,
+    // never its own cookie.
+    plugins: [bearer()],
+  });
+}
 
 /**
  * The only AuthEngine implementation for now. Everything better-auth-specific
@@ -25,46 +81,10 @@ import { AuthConfig } from './config/auth-config.schema';
 @Injectable()
 export class BetterAuthEngine implements AuthEngine {
   private readonly logger = new Logger(BetterAuthEngine.name);
-  // Typed as `any` deliberately: betterAuth()'s return type is a generic keyed to
-  // its exact options object, which fights TS when options are built dynamically
-  // (from our own config). This is the one place that trade-off is made — every
-  // call below is still checked against auth-engine.interface.ts by `implements`.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private readonly auth: any;
+  private readonly auth: BetterAuthInstance;
 
-  constructor(prisma: PrismaClient, config: AuthConfig, emailProvider: EmailProvider) {
-    this.auth = betterAuth({
-      // Origin only (no path) — better-auth appends its own basePath default
-      // ('/api/auth'), which matches AuthController's actual mount (global
-      // prefix 'api' + controller 'auth'). Passing the full API_URL (which
-      // already includes '/api') would make better-auth skip appending that
-      // path and build broken verification/reset links.
-      baseURL: config.API_URL ? new URL(config.API_URL).origin : undefined,
-      database: prismaAdapter(prisma, { provider: 'postgresql' }),
-      secret: config.SESSION_SECRET,
-      session: {
-        strategy: config.SESSION_STRATEGY, // 'cookie' (default) or 'jwt' — see architecture doc
-        cookieCache: { enabled: true },
-      },
-      emailAndPassword: {
-        enabled: true,
-        requireEmailVerification: true,
-        sendResetPassword: async ({ user, url }: { user: { email: string }; url: string }) => {
-          await emailProvider.send(user.email, 'Reset your password', resetPasswordHtml(url));
-        },
-      },
-      emailVerification: {
-        sendVerificationEmail: async ({ user, url }: { user: { email: string }; url: string }) => {
-          await emailProvider.send(user.email, 'Verify your email', verificationHtml(url));
-        },
-      },
-      // Required for signOut/verifySession below, which authenticate via
-      // `Authorization: Bearer <session token>` — AuthController owns the
-      // actual cookie (see SESSION_COOKIE in auth.controller.ts), so
-      // better-auth itself is only ever driven over its bearer-token path,
-      // never its own cookie.
-      plugins: [bearer()],
-    });
+  constructor(pool: Pool, config: AuthConfig, emailProvider: EmailProvider) {
+    this.auth = createBetterAuthInstance(pool, config, emailProvider);
   }
 
   async signUp(input: SignUpInput) {

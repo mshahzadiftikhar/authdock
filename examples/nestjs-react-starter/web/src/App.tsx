@@ -1,5 +1,13 @@
 import { useState, type ReactNode } from 'react';
-import { LoginForm, SignupForm, ForgotPasswordForm, useSession, useSignOut } from '@authdock/auth-react';
+import {
+  LoginForm,
+  SignupForm,
+  ForgotPasswordForm,
+  ResetPasswordForm,
+  VerifyEmailStatus,
+  useSession,
+  useSignOut,
+} from '@authdock/auth-react';
 import './App.css';
 
 type Tab = 'login' | 'signup' | 'forgot';
@@ -9,6 +17,35 @@ export function App() {
   const { signOut, loading: signingOut } = useSignOut();
   const [tab, setTab] = useState<Tab>('login');
   const [signupMessage, setSignupMessage] = useState<string | null>(null);
+  const [resetDone, setResetDone] = useState(false);
+
+  const path = window.location.pathname;
+  const token = new URLSearchParams(window.location.search).get('token');
+
+  if (path === '/verify-email' && token) {
+    return (
+      <div className="example-page">
+        <span className="example-wordmark">AuthDock</span>
+        <VerifyEmailStatus token={token} />
+      </div>
+    );
+  }
+
+  if (path === '/reset-password' && token) {
+    let resetContent: ReactNode;
+    if (resetDone) {
+      resetContent = <p className="example-message">Password updated. You can close this tab and log in.</p>;
+    } else {
+      resetContent = <ResetPasswordForm token={token} onSuccess={() => setResetDone(true)} />;
+    }
+
+    return (
+      <div className="example-page">
+        <span className="example-wordmark">AuthDock</span>
+        {resetContent}
+      </div>
+    );
+  }
 
   if (loading) {
     return (

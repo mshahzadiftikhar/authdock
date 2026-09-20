@@ -66,10 +66,16 @@ explicit v2 idea, not implemented — don't add it speculatively.
   API consumers, but cookie is the default and the one that gets security
   attention. Do not make bearer-JWT-in-localStorage the default — that was
   explicitly identified as the weaker pattern this project moves away from.
-- **Database: PostgreSQL via Prisma.** Decided, not left generic — see
-  `packages/auth-nestjs/prisma/schema.prisma`. Don't add a second ORM/DB
-  adapter without a real reason; better-auth's own adapter can be swapped
-  later if genuinely needed.
+- **Database: PostgreSQL, connected directly via `pg` — no ORM.**
+  `AuthModule.forRoot({ database })` takes a `pg.Pool` and hands it straight
+  to better-auth, which manages its own schema through its built-in Kysely
+  adapter. Schema is derived from `packages/auth-nestjs/better-auth.cli-config.ts`
+  via `npx @better-auth/cli generate`/`migrate` — there's no hand-maintained
+  schema file to keep in sync. (This was Prisma before v0.1.0; dropped after
+  confirming better-auth's `database` option accepts a `pg.Pool` directly, no
+  ORM required — see the git history around that change for the reasoning.
+  Don't add an ORM back without a real reason — the whole point of dropping
+  Prisma was fewer layers between us and what better-auth actually needs.)
 - **No CLI, no `auth-core` package.** Both were cut from an earlier, more
   ambitious plan to keep the project finishable. The example app in
   `examples/` is the "quick start," not a code generator.
@@ -104,8 +110,7 @@ npm install
 
 # auth-nestjs
 cd packages/auth-nestjs
-npx prisma generate        # requires DATABASE_URL in .env
-npx prisma migrate dev
+DATABASE_URL=... npm run db:migrate   # requires a running Postgres
 npx jest                    # unit tests, e.g. config validation
 
 # auth-react

@@ -45,4 +45,16 @@ describe('loadAuthConfig — security-relevant boot validation', () => {
     const config = loadAuthConfig(validBaseEnv as NodeJS.ProcessEnv);
     expect(config.SESSION_STRATEGY).toBe('cookie');
   });
+
+  it('defaults FRONTEND_URL to localhost in development when unset', () => {
+    const { FRONTEND_URL, ...rest } = validBaseEnv;
+    const config = loadAuthConfig(rest as NodeJS.ProcessEnv);
+    expect(config.FRONTEND_URL).toBe('http://localhost:5173');
+  });
+
+  it('rejects missing FRONTEND_URL in production (verification/reset emails link back to it)', () => {
+    const { FRONTEND_URL, ...rest } = validBaseEnv;
+    const env = { ...rest, NODE_ENV: 'production', RESEND_API_KEY: 'test-key' };
+    expect(() => loadAuthConfig(env as unknown as NodeJS.ProcessEnv)).toThrow(/FRONTEND_URL/);
+  });
 });
