@@ -1,6 +1,6 @@
 {
   "name": "@authdock/auth-nestjs",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "NestJS auth module for AuthDock — wraps better-auth behind an AuthEngine interface, cookie sessions by default.",
   "license": "MIT",
   "main": "dist/index.js",

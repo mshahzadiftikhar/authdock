@@ -5,7 +5,7 @@ wraps [better-auth](https://www.better-auth.com) behind an `AuthEngine`
 interface, with cookie sessions on by default, boot-time config validation,
 and rate limiting.
 
-> **Breaking change in 0.1.0:** `AuthModule.forRoot({ prisma })` is now
+> **Breaking change in 1.0.0:** `AuthModule.forRoot({ prisma })` is now
 > `AuthModule.forRoot({ database })`, taking a `pg.Pool` instead of a
 > `PrismaClient`. Prisma is no longer used at all — see "Database setup"
 > below. If you're on `0.0.1`, this requires a code change, not just a

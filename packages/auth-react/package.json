@@ -1,6 +1,6 @@
 {
   "name": "@authdock/auth-react",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Headless auth hooks + one themeable default form set for AuthDock.",
   "license": "MIT",
   "main": "dist/index.js",
