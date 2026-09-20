@@ -33,11 +33,12 @@ examples/
 
 ## Install
 
-Both packages are published to npm:
+Both packages are published to npm. Install the one that matches each side
+of your app — `auth-nestjs` in your API, `auth-react` in your frontend:
 
 ```bash
-npm install @authdock/auth-nestjs better-auth pg
-npm install @authdock/auth-react
+npm install @authdock/auth-nestjs better-auth pg   # in your NestJS API
+npm install @authdock/auth-react                    # in your React app
 ```
 
 See each package's own README for usage:
@@ -82,8 +83,8 @@ npm run db:migrate   # npx @better-auth/cli migrate under the hood
   throws at boot in production if `SESSION_SECRET` is missing or left at an
   obvious placeholder, or if `RESEND_API_KEY`/`DATABASE_URL` is missing.
 - **No CLI, no `auth-core` package.** Both were cut deliberately from the
-  original plan to keep the MVP finishable — see the planning doc's
-  "Recommended Architecture (MVP, revised)" section for the reasoning.
+  original plan to keep the MVP finishable. The example app in `examples/`
+  is the "quick start" — there's no code generator.
 
 ## License
 

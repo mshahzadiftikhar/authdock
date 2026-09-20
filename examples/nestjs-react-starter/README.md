@@ -8,13 +8,30 @@ Postgres database.
 
 ## Setup
 
-1. From the repo root: `npm install` (picks up all three workspace
-   packages under `examples/nestjs-react-starter/`: this orchestration
-   package plus `server/` and `web/`). Requires Docker Desktop running.
-2. `cp examples/nestjs-react-starter/server/.env.example examples/nestjs-react-starter/server/.env`
-   and fill in `SESSION_SECRET` (`openssl rand -base64 32`). The default
-   `DATABASE_URL` already matches the Docker Postgres credentials below.
-3. `cd examples/nestjs-react-starter && npm run dev`
+Requires Docker Desktop running (for the Postgres container).
+
+1. Install dependencies from the repo root — this picks up all three
+   workspace packages under `examples/nestjs-react-starter/`: this
+   orchestration package plus `server/` and `web/`.
+
+   ```bash
+   npm install
+   ```
+
+2. Set up the server's env file and fill in `SESSION_SECRET`. The default
+   `DATABASE_URL` already matches the Docker Compose Postgres credentials
+   (see `docker-compose.yml`), so you shouldn't need to touch it.
+
+   ```bash
+   cp examples/nestjs-react-starter/server/.env.example examples/nestjs-react-starter/server/.env
+   openssl rand -base64 32   # paste the output into SESSION_SECRET
+   ```
+
+3. Start everything:
+
+   ```bash
+   cd examples/nestjs-react-starter && npm run dev
+   ```
 
 That one command: starts Postgres via Docker Compose (waits for its
 healthcheck), applies better-auth's schema directly via
